@@ -58,7 +58,7 @@ class Schedule : AppCompatActivity() {
     }
 
     private fun getUserId() = runBlocking{
-        val responseDeferred = async { NetworkManager().serverCaller("getmonthevents $userId 2021 2") }
+        val responseDeferred = async { NetworkManager().serverCaller("getuserinfo $user") }
         val response = responseDeferred.await()
         Log.d("EventAttempt", "Server responded with: $response")
         if (response != "User not found") {
@@ -70,7 +70,7 @@ class Schedule : AppCompatActivity() {
 
     private fun getEvents(Activity: ComponentActivity)= runBlocking{
         Log.d("Schedule", "Getting events")
-        while (userId != null) {
+        if (userId != null) {
             val responseDeferred =
                 async { NetworkManager().serverCaller("getmonthevents $userId 2021 2") }
             val response = responseDeferred.await()
