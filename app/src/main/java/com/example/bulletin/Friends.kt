@@ -10,8 +10,13 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.bulletin.Schedule.Companion.userId
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.io.BufferedReader
 import java.io.BufferedWriter
 import java.io.InputStreamReader
@@ -22,7 +27,6 @@ class Friends : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var dataList: ArrayList<DataClass>
     private lateinit var titleList:Array<String>;
-    private val URL = "100.103.6.83"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -40,95 +44,43 @@ class Friends : AppCompatActivity() {
         }
         val friendName = findViewById<EditText>(R.id.username_input)
         button.setOnClickListener {
-            addFriends(friendName.text.toString())
+            lifecycleScope.launch {
+                addFriends(friendName.text.toString())
+            }
         }
         recyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.setHasFixedSize(true)
         dataList = arrayListOf<DataClass>()
-        getFriends()
+        lifecycleScope.launch {
+            getFriends()
+        }
 
 
     }
-    private fun addFriends(friendName:String){
-        Thread{
-            try{
-                println("Adding friend")
-                val mSocket = Socket(URL, 8000);
-                val inputStream = InputStreamReader(mSocket.getInputStream());
-                val outputStreamW = OutputStreamWriter(mSocket.getOutputStream());
-                val bufferedReader = BufferedReader(inputStream);
-                val bufferedWriter = BufferedWriter(outputStreamW);
-                bufferedWriter.write("addfriend $userName $friendName")
-                bufferedWriter.flush();
-                bufferedReader.close();
-                bufferedWriter.close();
-                outputStreamW.close();
-                inputStream.close();
-                mSocket.close();
-                }catch(e:Exception){
-                    e.message?.let { Log.d("Oh no", it) };
-
-                }
-        }.start()
+    private fun addFriends(friendName:String) = runBlocking{
+        val responseDeferred = async { NetworkManager().serverCaller("addfriend $userName $friendName") }
+        val response = responseDeferred.await()
+        Log.d("addFriend", response)
+        lifecycleScope.launch {
+            getFriends()
+        }
     }
-    private fun getFriends(){
-
-        Thread {
-            try {
-
-                var reading = true;
-                val mSocket = Socket(URL, 8000);
-                val inputStream = InputStreamReader(mSocket.getInputStream());
-                val outputStreamW = OutputStreamWriter(mSocket.getOutputStream());
-                val bufferedReader = BufferedReader(inputStream);
-                val bufferedWriter = BufferedWriter(outputStreamW);
-                bufferedWriter.write("getuserinfo $userName \n");
-                bufferedWriter.flush();
-                Log.d("Process", "Process started as $userName");
-                var i = 0;
-                while(reading) {
-
-                    println("Waiting for response; currently reading "+i);
-                    if (bufferedReader.ready()) {
-                        println("Response ready");
-                        val response = bufferedReader.readLine()
-                        Log.d("Response", " $response");
-
-                        println("Response: " + response);
-                        if (!response.equals("User not found")) {
-                            val words = response.split("(", ")")
-                            println(words[1])
-                            val friends = words[1].split(",")
-                            titleList = friends.toTypedArray()
-                            getData()
+    private fun getFriends() = runBlocking{
+        val responseDeferred = async { NetworkManager().serverCaller("getuserinfo $userName ") }
+        val response = responseDeferred.await()
+        Log.d("addFriend", response)
+        if (response != "User not found") {
+            val words = response.split("(", ")")
+            println(words[1])
+            val friends = words[1].split(",")
+            titleList = friends.toTypedArray()
+            getData()
 
 
-                        }else{
-                            Log.d("Friend", "Friend Acquisition failed");
-                        }
-                        println("exiting loop");
-                        break;
-                    }
-                    i++;
-                }
-
-                bufferedReader.close();
-                bufferedWriter.close();
-                outputStreamW.close();
-                inputStream.close();
-                mSocket.close();
-
-
-
-
-
-            } catch (e: Exception) {
-                e.message?.let { Log.d("Oh no", it) };
-            }
-        }.start();
-
-
+        }else{
+            Log.d("Friend", "Friend Acquisition failed");
+        }
     }
     private fun getData(){
         for(i in titleList.indices){

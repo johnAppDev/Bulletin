@@ -27,8 +27,6 @@ import java.io.OutputStreamWriter
 import java.net.Socket
 
 
-private const val URL = "100.103.6.83"
-
 private var loggedIn = false;
 class MainActivity : ComponentActivity()  {
 
@@ -44,8 +42,8 @@ class MainActivity : ComponentActivity()  {
             val password = findViewById<View>(R.id.password_input) as EditText
             button.setOnClickListener {
                 user = username.text.toString();
-                lifecycleScope.launch {
-                    Login(user!!, password.text.toString(), this@MainActivity)
+                lifecycleScope.launch(Dispatchers.IO) {
+                    login(user!!, password.text.toString(), this@MainActivity)
                 }
                 //Login(username.text.toString(), password.text.toString(), this@MainActivity)
 
@@ -56,16 +54,15 @@ class MainActivity : ComponentActivity()  {
             }
     }
 
-    suspend fun Login(userName:String, pass:String, Activity: ComponentActivity) = runBlocking {
-
-         Log.d("LoginAttempt", "Login attempted by $userName with $pass")
+    private fun login(userName:String, pass:String, Activity: ComponentActivity) = runBlocking {
+       Log.d("LoginAttempt", "Login attempted by $userName with $pass")
        val responseDeferred = async{ NetworkManager().serverCaller("login $userName $pass")}
        val response = responseDeferred.await()
        Log.d("LoginAttempt", "Server responded with: $response")
-        if(response.equals("User logged in")){
+       if(response == "User logged in"){
             val intent = Intent(Activity, Schedule::class.java)
             Activity.startActivity(intent)
-        }
+       }
 
    }
 }

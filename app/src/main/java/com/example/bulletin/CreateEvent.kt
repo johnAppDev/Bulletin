@@ -11,6 +11,11 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.io.BufferedReader
 import java.io.BufferedWriter
 import java.io.InputStreamReader
@@ -38,66 +43,23 @@ class CreateEvent : AppCompatActivity() {
         val invitees = findViewById<View>(R.id.invitees) as EditText
 
         button.setOnClickListener {
-            createEvent(title.text.toString(),date.text.toString(),startTime.text.toString(),endTime.text.toString(), checkBox.isChecked,invitees.text.toString(), this)
+            lifecycleScope.launch(Dispatchers.IO) {
+            createEvent(title.text.toString(),date.text.toString(),startTime.text.toString(),endTime.text.toString(), checkBox.isChecked,invitees.text.toString(), this@CreateEvent)
+            }
+
         }
 
     }
 
-    fun createEvent(title:String, date:String, startTime:String, endTime:String, publicity:Boolean, invitees:String, Activity:AppCompatActivity) {
-        var success = false
-
-        Thread {
-            try {
-                println("UserId: ${Schedule.userId}")
-                var reading = true;
-                val mSocket = Socket(URL, 22);
-                val inputStream = InputStreamReader(mSocket.getInputStream());
-                val outputStreamW = OutputStreamWriter(mSocket.getOutputStream());
-                val bufferedReader = BufferedReader(inputStream);
-                val bufferedWriter = BufferedWriter(outputStreamW);
-                bufferedWriter.write("createevent ${Schedule.userId} $title $date $startTime $endTime ${if(publicity) "FriendsOnly" else "Private"} $invitees .\n");
-                bufferedWriter.flush();
-                Log.d("Process", "Process started");
-                var i = 0;
-                while(reading) {
-
-                    println("Waiting for response; currently reading "+i);
-                    if (bufferedReader.ready()) {
-                        println("Response ready");
-                        val response = bufferedReader.readLine()
-                        Log.d("Response", " $response");
-                        println("Response: " + response);
-                        if (response.equals("Event created")) {
-                            success = true;
-                            Activity.runOnUiThread {
-                                val intent = Intent(this, Schedule::class.java)
-                                startActivity(intent)
-                            }
-
-                        }else{
-
-                        }
-                        println("exiting loop");
-                        break;
-                    }
-                    i++;
-                }
-
-                bufferedReader.close();
-                bufferedWriter.close();
-                outputStreamW.close();
-                inputStream.close();
-                mSocket.close();
-
-
-
-
-
-            } catch (e: Exception) {
-                e.message?.let { Log.d("Oh no", it) };
-            }
-        }.start();
-
+    private fun createEvent(title:String, date:String, startTime:String, endTime:String, publicity:Boolean, invitees:String, Activity:AppCompatActivity) = runBlocking{
+        Log.d("EventCreation", "EventCreation attempted ")
+        val responseDeferred = async{ NetworkManager().serverCaller("createevent ${Schedule.userId} $title $date $startTime $endTime ${if(publicity) "FriendsOnly" else "Private"} $invitees")}
+        val response = responseDeferred.await()
+        Log.d("EventCreation", "Server responded with: $response")
+        if (response == "Event created") {
+            val intent = Intent(Activity, Schedule::class.java)
+            Activity.startActivity(intent)
+        }
 
     }
 }
