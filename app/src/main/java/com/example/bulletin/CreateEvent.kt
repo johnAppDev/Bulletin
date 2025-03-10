@@ -53,7 +53,7 @@ class CreateEvent : AppCompatActivity() {
 
     private fun createEvent(title:String, date:String, startTime:String, endTime:String, publicity:Boolean, invitees:String, Activity:AppCompatActivity) = runBlocking{
         Log.d("EventCreation", "EventCreation attempted ")
-        val responseDeferred = async{ NetworkManager().serverCaller("createevent ${Schedule.userId} $title $date $startTime $endTime ${if(publicity) "FriendsOnly" else "Private"} $invitees")}
+        val responseDeferred = async{ NetworkManager().serverCaller("createevent|${Schedule.userId}|$title|$date|$startTime|$endTime|${if(publicity) "FriendsOnly" else "Private"}|$invitees")}
         val response = responseDeferred.await()
         Log.d("EventCreation", "Server responded with: $response")
         if (response == "Event created") {

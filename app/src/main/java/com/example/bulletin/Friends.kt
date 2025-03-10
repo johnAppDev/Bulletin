@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bulletin.Schedule.Companion.userId
@@ -49,7 +50,7 @@ class Friends : AppCompatActivity() {
             }
         }
         recyclerView = findViewById(R.id.recyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.layoutManager = GridLayoutManager(this, 7)
         recyclerView.setHasFixedSize(true)
         dataList = arrayListOf<DataClass>()
         lifecycleScope.launch {
@@ -59,7 +60,7 @@ class Friends : AppCompatActivity() {
 
     }
     private fun addFriends(friendName:String) = runBlocking{
-        val responseDeferred = async { NetworkManager().serverCaller("addfriend $userName $friendName") }
+        val responseDeferred = async { NetworkManager().serverCaller("addfriend|$userName|$friendName") }
         val response = responseDeferred.await()
         Log.d("addFriend", response)
         lifecycleScope.launch {
@@ -67,7 +68,7 @@ class Friends : AppCompatActivity() {
         }
     }
     private fun getFriends() = runBlocking{
-        val responseDeferred = async { NetworkManager().serverCaller("getuserinfo $userName ") }
+        val responseDeferred = async { NetworkManager().serverCaller("getuserinfo|$userName ") }
         val response = responseDeferred.await()
         Log.d("addFriend", response)
         if (response != "User not found") {

@@ -57,7 +57,7 @@ class SignUp : AppCompatActivity() {
     }
     private fun CreateUser(email:String, userName:String, pass:String, Activity: ComponentActivity) = runBlocking {
         Log.d("AccountCreation", "Account creation attempted by $userName with $pass")
-        val responseDeferred = async{ NetworkManager().serverCaller("createuser $userName $email $pass")}
+        val responseDeferred = async{ NetworkManager().serverCaller("createuser|$userName|$email|$pass")}
         val response = responseDeferred.await()
         Log.d("AccountCreation", "Server responded with: $response")
         if(response == "User created"){

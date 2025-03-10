@@ -1,58 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bulletinboardtexture"
-    android:orientation="vertical"
-    android:weightSum="2"
-    >
+    android:weightSum="2">
 
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 
     <TextView
+        android:id="@+id/scheduleTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Schedule:"
         android:fontFamily="@font/bettercomicsansbold"
+        android:text="Schedule:"
         android:textSize="30sp"
-        android:id="@+id/scheduleTitle"
-        />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:weightSum="2">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/textbox"
+        android:padding="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/friendButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scheduleTitle" />
 
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center|bottom"
-            android:background="@drawable/textbox"
-            android:padding="10dp"
-            android:text="Friends"
-            android:id="@+id/friendButton"
-            android:fontFamily="@font/bettercomicsansbold"
-            android:backgroundTint="@color/purple_200"
-            android:textColor="@color/black"/>
-        <Button
-            android:layout_weight="1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center|bottom"
-            android:background="@drawable/textbox"
-            android:padding="10dp"
-            android:text="Add Event"
-            android:fontFamily="@font/bettercomicsansbold"
-            android:backgroundTint="@color/purple_200"
-            android:id="@+id/eventButton"
-            android:textColor="@color/black"/>
-    </LinearLayout>
+    <Button
+        android:id="@+id/friendButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/textbox"
+        android:backgroundTint="@color/purple_200"
+        android:fontFamily="@font/bettercomicsansbold"
+        android:padding="10dp"
+        android:text="Friends"
+        android:textColor="@color/black"
+        app:layout_constraintBaseline_toBaselineOf="@+id/eventButton"
+        app:layout_constraintEnd_toStartOf="@+id/eventButton"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/eventButton"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:background="@drawable/textbox"
+        android:backgroundTint="@color/purple_200"
+        android:fontFamily="@font/bettercomicsansbold"
+        android:padding="10dp"
+        android:text="Add Event"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/friendButton" />
 
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

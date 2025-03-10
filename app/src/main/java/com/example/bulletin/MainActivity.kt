@@ -56,7 +56,7 @@ class MainActivity : ComponentActivity()  {
 
     private fun login(userName:String, pass:String, Activity: ComponentActivity) = runBlocking {
        Log.d("LoginAttempt", "Login attempted by $userName with $pass")
-       val responseDeferred = async{ NetworkManager().serverCaller("login $userName $pass")}
+       val responseDeferred = async{ NetworkManager().serverCaller("login|$userName|$pass")}
        val response = responseDeferred.await()
        Log.d("LoginAttempt", "Server responded with: $response")
        if(response == "User logged in"){
