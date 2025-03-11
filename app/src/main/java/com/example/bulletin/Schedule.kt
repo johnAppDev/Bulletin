@@ -97,11 +97,6 @@ class Schedule : AppCompatActivity() {
             val response = responseDeferred.await()
             Log.d("EventAttempt", "Server responded with: $response")
             if (response != "No events found" && response != "Unknown Command") {
-                Activity.runOnUiThread {
-                    val title = findViewById<TextView>(R.id.scheduleTitle)
-                    val responseText = "Schedule: $response"
-                    title.text = responseText;
-                }
                 val words = response.split(",")
                 Log.d("Words", words.size.toString())
                 var index = 0;
