@@ -1,4 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/friendsFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    tools:context=".Friends">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Friends"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/bettercomicsansbold"
+            android:layout_gravity="center"
+            />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/textbox"
+            android:textColor="@color/black"
+            android:fontFamily="@font/bettercomicsans"
+            android:hint="Username"
+            android:id="@+id/username_input"
+            android:textColorHint="#757575"
+            android:padding="15dp"
+            />
+        <Button
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:background="@drawable/textbox"
+            android:backgroundTint="@color/purple_200"
+            android:fontFamily="@font/bettercomicsansbold"
+            android:text="Submit"
+            android:textStyle="bold"
+            android:id = "@+id/submitButton"
+            android:layout_gravity="center"
+            android:textColor="@color/black"
+            />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id = "@+id/recyclerView"/>
+
+
+
+
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
+<!--
+<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -78,3 +140,4 @@
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
+-->

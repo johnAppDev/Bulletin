@@ -3,6 +3,9 @@ package com.example.bulletin
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import androidx.activity.ComponentActivity
@@ -10,6 +13,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,35 +28,43 @@ import java.io.InputStreamReader
 import java.io.OutputStreamWriter
 import java.net.Socket
 val userName = MainActivity.user;
-class Friends : AppCompatActivity() {
+class Friends : Fragment(R.layout.activity_friends) {
     private lateinit var recyclerView: RecyclerView
     private lateinit var dataList: ArrayList<DataClass>
     private lateinit var titleList:Array<String>;
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_friends)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.activity_friends, container, false)
+    }
+    override fun onStart() {
+        super.onStart()
+
+/*
+        ViewCompat.setOnApplyWindowInsetsListener(getView()?.findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
-        }
-        val button = findViewById<Button>(R.id.submitButton)
-        val backButton = findViewById<Button>(R.id.backButton)
-        backButton.setOnClickListener {
+        }*/
+        val button = requireView().findViewById<Button>(R.id.submitButton)
+       // val backButton = getView()?.findViewById<Button>(R.id.backButton)
+       /* backButton.setOnClickListener {
             val intent = Intent(this, Schedule::class.java)
             startActivity(intent)
-        }
-        val friendName = findViewById<EditText>(R.id.username_input)
+        }*/
+        val friendName = view?.findViewById<EditText>(R.id.username_input)
         button.setOnClickListener {
             lifecycleScope.launch {
-                addFriends(friendName.text.toString())
+                addFriends(friendName!!.text.toString())
             }
         }
-        recyclerView = findViewById(R.id.recyclerView)
-        recyclerView.layoutManager = GridLayoutManager(this, 7)
+        recyclerView = requireView().findViewById(R.id.recyclerView)
+        recyclerView.layoutManager = GridLayoutManager(activity, 3)
         recyclerView.setHasFixedSize(true)
         dataList = arrayListOf<DataClass>()
+        recyclerView.adapter = AdapterClass(dataList)
         lifecycleScope.launch {
             getFriends()
         }
@@ -79,15 +91,19 @@ class Friends : AppCompatActivity() {
             getData()
 
 
+
         }else{
             Log.d("Friend", "Friend Acquisition failed");
         }
     }
     private fun getData(){
+        dataList.clear()
         for(i in titleList.indices){
             val dataClass = DataClass(titleList[i])
             dataList.add(dataClass)
         }
-        recyclerView.adapter = AdapterClass(dataList)
+
+        recyclerView.adapter?.notifyDataSetChanged()
+
     }
 }
