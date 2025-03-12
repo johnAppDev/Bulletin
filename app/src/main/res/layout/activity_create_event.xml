@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/create_event"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".CreateEvent">
@@ -11,30 +11,30 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="@drawable/bulletinboardtexture"
         android:gravity="center">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Create Event"
             android:fontFamily="@font/bettercomicsansbold"
             android:gravity="center"
-            android:textSize="52sp"
-            />
+            android:text="Create Event"
+            android:textColor="@color/black"
+            android:textSize="52sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Title:"
                 android:fontFamily="@font/bettercomicsansbold"
-                android:textSize="20sp"
                 android:padding="10dp"
-                android:textColor="#FFFFFF"
-                />
+                android:text="Title:"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
             <EditText
                 android:id="@+id/eventTitle"
                 android:layout_width="match_parent"
@@ -52,15 +52,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Date:"
                 android:fontFamily="@font/bettercomicsansbold"
-                android:textSize="20sp"
                 android:padding="10dp"
-                android:textColor="#FFFFFF"
-                />
+                android:text="Date:"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
             <EditText
                 android:id="@+id/date"
                 android:layout_width="match_parent"
@@ -78,15 +78,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Start Time:"
                 android:fontFamily="@font/bettercomicsansbold"
-                android:textSize="20sp"
                 android:padding="10dp"
-                android:textColor="#FFFFFF"
-                />
+                android:text="Start Time:"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
             <EditText
                 android:id="@+id/startTime"
                 android:layout_width="match_parent"
@@ -104,15 +104,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="End Time:"
+                android:layout_height="51dp"
                 android:fontFamily="@font/bettercomicsansbold"
-                android:textSize="20sp"
                 android:padding="10dp"
-                android:textColor="#FFFFFF"
-                />
+                android:text="End Time:"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
             <EditText
                 android:id="@+id/endTime"
                 android:layout_width="match_parent"
@@ -128,26 +128,27 @@
         </LinearLayout>
 
         <CheckBox
+            android:buttonTint="@color/black"
             android:id="@+id/checkBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="All Friends"
             android:fontFamily="@font/bettercomicsansbold"
-            />
+            android:text="All Friends"
+            android:textColor="@color/black" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Invitees:"
                 android:fontFamily="@font/bettercomicsansbold"
-                android:textSize="20sp"
                 android:padding="10dp"
-                android:textColor="#FFFFFF"
-                />
+                android:text="Invitees:"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
             <EditText
                 android:id="@+id/invitees"
                 android:layout_width="match_parent"

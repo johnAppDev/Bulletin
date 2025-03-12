@@ -46,15 +46,26 @@ class Schedule : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        val createEventFragment = CreateEvent()
+        val friendsFragment = Friends()
         val friendButton = findViewById<Button>(R.id.friendButton)
         val eventButton = findViewById<Button>(R.id.eventButton)
+        supportFragmentManager.beginTransaction().apply {
+            replace(R.id.flFragment, friendsFragment)
+            commit()
+        }
         friendButton.setOnClickListener {
-            val intent = Intent(this, Friends::class.java)
-            startActivity(intent)
+            supportFragmentManager.beginTransaction().apply {
+                replace(R.id.flFragment, friendsFragment)
+                commit()
+            }
         }
         eventButton.setOnClickListener {
-            val intent = Intent(this, CreateEvent::class.java)
-            startActivity(intent)
+            supportFragmentManager.beginTransaction().apply {
+                replace(R.id.flFragment, createEventFragment)
+                commit()
+            }
         }
 
         Log.d("Schedule", "Starting")

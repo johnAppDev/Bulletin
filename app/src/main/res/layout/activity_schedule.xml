@@ -6,18 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bulletinboardtexture"
-    android:weightSum="2">
+    android:weightSum="2"
 
-
-    <TextView
-        android:id="@+id/scheduleTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/bettercomicsansbold"
-        android:text="Schedule:"
-        android:textSize="30sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    >
 
 
     <androidx.recyclerview.widget.RecyclerView
@@ -25,6 +16,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="20dp"
         android:background="@drawable/textbox"
         android:padding="10dp"
@@ -32,7 +24,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/scheduleTitle">
+        app:layout_constraintTop_toTopOf="parent">
 
     </androidx.recyclerview.widget.RecyclerView>
 
@@ -56,9 +48,9 @@
             android:orientation="vertical" />
            
             -->
-        <fragment
-            android:name = "com.example.bulletin.Friends"
-            android:id="@+id/friendsFragment"
+        <FrameLayout
+
+            android:id="@+id/flFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
     </ScrollView>
