@@ -84,8 +84,13 @@ class Schedule : AppCompatActivity() {
             dateItems.add(day)
         }
         recyclerView.layoutManager = GridLayoutManager(this, 7)
-        recyclerView.adapter = CalendarAdapter(dateItems)
-
+        val calendarAdapter = CalendarAdapter(dateItems)
+        recyclerView.adapter = calendarAdapter
+       calendarAdapter.setOnClickListener(object : CalendarAdapter.OnClickListener {
+            override fun onClick(position: Int, model: DateItem) {
+               Log.d("Schedule", "Clicked on item at $position")
+            }
+        })
 
     }
 
