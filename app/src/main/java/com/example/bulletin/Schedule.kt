@@ -80,14 +80,27 @@ class Schedule : AppCompatActivity() {
        calendarAdapter.setOnClickListener(object : CalendarAdapter.OnClickListener {
             override fun onClick(position: Int, model: DateItem) {
                Log.d("Schedule", "Clicked on item at $position")
-               Log.d("Schedule", "Item has a description of: ${dateItems[position].eventInfo}")
+                val eventList = dateItems[position].eventItems
+                if (eventList != null) {
+                    for (i in 0..<eventList.size) {
+                        Log.d("ScheduleEvents", "${eventList[i].title}")
+                    }
+                }else{
+                    Log.d("EventList", "Null")
+                }
+               Log.d("Schedule", "Item has a description of: ${dateItems[position].eventItems?.get(0)?.title}")
+                supportFragmentManager.beginTransaction().apply {
+                    replace(R.id.flFragment, EventView())
+                    commit()
+                }
             }
         })
 
     }
     private fun initializeCalendar(){
         for(nums in 0..30){
-            var day = DateItem(nums.toString(),"Event:$nums")
+
+            var day = DateItem(nums.toString(),null)
 
             dateItems.add(day)
         }
@@ -117,13 +130,30 @@ class Schedule : AppCompatActivity() {
                 val jsonObject = JSONObject("""{"Events": $response }""")
                 val jsonObjectArray = jsonObject.getJSONArray("Events");
                 for (i in 0 until(jsonObjectArray.length())){
-                    val date = jsonObjectArray.getJSONObject(i).getString("date")
-                    val datePieces = date.split("/")
-                    val index = datePieces[datePieces.size-1].toInt()
 
                     val title = jsonObjectArray.getJSONObject(i).getString("title")
+                    val date = jsonObjectArray.getJSONObject(i).getString("date")
+                    val startTime = jsonObjectArray.getJSONObject(i).getString("startTime")
+                    val endTime = jsonObjectArray.getJSONObject(i).getString("endTime")
+                    val location = jsonObjectArray.getJSONObject(i).getString("location")
+                    val publicityType = jsonObjectArray.getJSONObject(i).getString("publicityType")
+                    val invitees: List<String> = jsonObjectArray.getJSONObject(i).getString("invitees").split(",")
+                    val details = jsonObjectArray.getJSONObject(i).getString("details")
+                    val eventId = jsonObjectArray.getJSONObject(i).getString("eventid")
+                    val datePieces = date.split("/")
+                    val index = datePieces[datePieces.size-1].toInt()
+                    val tempEvent=  EventItem(title,date,startTime,endTime,location,publicityType,invitees,details,eventId)
+
                     Log.d("JSON Object Title", title)
-                    dateItems[index].eventInfo = title
+                    if(dateItems[index].eventItems != null){
+                        dateItems[index].eventItems?.add(tempEvent)
+                    }else{
+                        dateItems[index].eventItems = arrayListOf()
+                        dateItems[index].eventItems?.add(tempEvent)
+                    }
+
+                    Log.d("Calendar Index: " , index.toString())
+
                 }
                 /*
                 val words = response.split(",")

@@ -1,29 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:background="#673AB7"
-        android:orientation="horizontal">
+        android:background="#673AB7">
 
         <TextView
             android:id="@+id/EventTime"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:fontFamily="@font/bettercomicsans"
-            android:text="12:00"
-            android:textSize="72sp" />
+            android:text="12:00 \n-12:30"
+            android:textSize="72sp"
+            app:layout_constraintBaseline_toBaselineOf="@+id/EventDetails"
+            app:layout_constraintEnd_toStartOf="@+id/EventDetails"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/EventDetails"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="31dp"
+            android:text="Birthday Party"
+            android:textSize="30sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/EventTime"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/deleteButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:text="Birthday Party"
-            android:textSize="30sp" />
-    </LinearLayout>
+            android:layout_weight="1"
+            android:text="Delete"
+            app:layout_constraintStart_toEndOf="@+id/EventTime"
+            app:layout_constraintTop_toBottomOf="@+id/EventDetails" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
