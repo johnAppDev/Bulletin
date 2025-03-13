@@ -27,15 +27,15 @@ import java.io.OutputStreamWriter
 import java.net.Socket
 
 
-private var loggedIn = false;
+private var loggedIn = false
 class MainActivity : ComponentActivity()  {
 
     companion object{
-        var user: String? = null;
+        var user: String? = null
     }
     override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.mainlayout);
+            super.onCreate(savedInstanceState)
+            setContentView(R.layout.mainlayout)
             val button = findViewById<Button>(R.id.loginButton)
             val signUpButton = findViewById<Button>(R.id.signUpButton)
             val username = findViewById<View>(R.id.username_input) as EditText

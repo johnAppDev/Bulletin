@@ -1,26 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-xmlns:android="http://schemas.android.com/apk/res/android"
-android:orientation="horizontal"
-android:padding="5dp"
-
-    android:background="@drawable/ic_launcher_background"
-android:layout_width="match_parent"
-android:layout_height="100dp"
-
-
-    >
-
-<TextView
-
-    android:id="@+id/date_display"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:padding="5dp"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center"
+    android:layout_height="50dp">
 
-    android:text="Hello"
-    android:textColor="@color/black"
-
-   />
+    <TextView
+        android:id="@+id/date_display"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:background="@color/purple_200"/>
 
 </LinearLayout>
