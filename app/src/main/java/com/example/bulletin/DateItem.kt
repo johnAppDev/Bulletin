@@ -1,7 +1,9 @@
 package com.example.bulletin
 
-import android.app.appsearch.StorageInfo
 
+import kotlinx.serialization.Serializable
+import android.app.appsearch.StorageInfo
+@Serializable
 class DateItem {
     var date: String? = null
     var eventInfo: String? = null

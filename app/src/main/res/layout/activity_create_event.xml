@@ -44,7 +44,6 @@
                 android:fontFamily="@font/bettercomicsans"
                 android:hint="Title"
                 android:textColor="#646464"
-                android:inputType="date"
                 android:textColorHint="#646464"
                 android:padding="15dp" />
         </LinearLayout>
