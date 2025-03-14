@@ -159,7 +159,7 @@ class Schedule : AppCompatActivity() {
         }
         recyclerView.adapter?.notifyDataSetChanged()
     }
-    private fun getUserId() = runBlocking{
+    private fun getUserId() = runBlocking {
         val responseDeferred = async { NetworkManager().serverCaller("getuserinfo|$user") }
         val response = responseDeferred.await()
         Log.d("EventAttempt", "Server responded with: $response")
@@ -168,8 +168,8 @@ class Schedule : AppCompatActivity() {
             userId = response.split(",")[0];
 
         }
-    }
 
+    }
 
 
 

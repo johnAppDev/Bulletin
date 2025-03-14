@@ -94,29 +94,43 @@ class FindTime : AppCompatActivity() {
 
     }
     fun findAvailableTime() = runBlocking{
-
+            var possibleDays:MutableList<EventItem> = arrayListOf()
             for(friend in afterFriends){
                 val responseDeferred =
                     async { NetworkManager().serverCaller("getbusytimeinmonth|3|${friend.dataTitle}|$currentYear|$currentMonth ") }
                 val response = responseDeferred.await()
                 val jsonObject = JSONObject("""{"busy": $response}""")
                 val jsonObjectArray= jsonObject.getJSONArray("busy")
+
                 for ( i in 0 until jsonObjectArray.length()){
                     Log.d("JSON Object", "$i : ${jsonObjectArray.getJSONArray(i)}")
-
+                    val friends:MutableList<String> = arrayListOf()
                     if(jsonObjectArray.getJSONArray(i).length() == 0){
                         Log.d("JsonDays", "Day $i is clear")
+
+                        friends.add("${friend.dataTitle}")
+                        possibleDays.add(EventItem("", "$currentYear/$currentMonth/$i", "0","2400", "", "", friends, "", "temp"))
                     }else{
                         Log.d("JsonDays","Day $i is kinda busy")
                         for(j in 0 until jsonObjectArray.getJSONArray(i).length()){
-                            Log.d("JsonDays", "On $i we have ${jsonObjectArray.getJSONArray(i).getJSONArray(j)}")
+                            val tempArray = jsonObjectArray.getJSONArray(i)
+                            Log.d("JsonDays", "On $i we have ${tempArray.getJSONArray(j)}")
+                            if(tempArray.getJSONArray(j)[0].toString().toInt() > 0 && j==0){
+                                possibleDays.add(EventItem("", "$currentYear/$currentMonth/$i", "0","${tempArray.getJSONArray(j)[0]}", "", "", friends, "", "temp"))
+                            }else if(j < tempArray.length()-1){
+                                possibleDays.add(EventItem("", "$currentYear/$currentMonth/$i", "${tempArray.getJSONArray(j-1)[1]}","${tempArray.getJSONArray(j)[0]}", "", "", friends, "", "temp"))
+                            }else if (tempArray.getJSONArray(j)[1].toString().toInt() < 2400){
+                                possibleDays.add(EventItem("", "$currentYear/$currentMonth/$i", "${tempArray.getJSONArray(j-1)[1]}","${tempArray.getJSONArray(j)[0]}", "", "", friends, "", "temp"))
+                                possibleDays.add(EventItem("", "$currentYear/$currentMonth/$i", "${tempArray.getJSONArray(j)[1]}","2400", "", "", friends, "", "temp"))
+                            }
                         }
                     }
                 }
                 Log.d("Busy time", response)
             }
-
-
+        for(possibleDay in possibleDays) {
+            Log.d("PossibleDays","Start: ${possibleDay.startTime}, End: ${possibleDay.endTime}")
+        }
     }
     private fun getFriends() = runBlocking{
         val responseDeferred = async { NetworkManager().serverCaller("getuserinfo|$userName ") }
