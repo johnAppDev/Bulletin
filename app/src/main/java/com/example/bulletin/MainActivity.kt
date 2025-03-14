@@ -60,7 +60,7 @@ class MainActivity : ComponentActivity()  {
        val response = responseDeferred.await()
        Log.d("LoginAttempt", "Server responded with: $response")
        if(response == "User logged in"){
-            val intent = Intent(Activity, FindTime::class.java)
+            val intent = Intent(Activity, Schedule::class.java)
             Activity.startActivity(intent)
        }
 

@@ -4,6 +4,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
@@ -24,7 +25,7 @@ import java.time.LocalDateTime
 
 private const val URL = "100.103.6.83"
 
-
+@RequiresApi(Build.VERSION_CODES.O)
 class Schedule : AppCompatActivity() {
     companion object{
         var userId: String? = null;
@@ -32,8 +33,11 @@ class Schedule : AppCompatActivity() {
     }
     private lateinit var recyclerView: RecyclerView
     private lateinit var dateItems:MutableList<DateItem>
+    private var currentMonth = LocalDate.now().month.value
+    private var currentYear = LocalDate.now().year
     private var firstDayOfWeekforMonth: Int = 0
-    @RequiresApi(Build.VERSION_CODES.O)
+    private lateinit var monthText: TextView
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
 
@@ -52,6 +56,10 @@ class Schedule : AppCompatActivity() {
         val eventViewFragment = EventView()
         val friendButton = findViewById<Button>(R.id.friendButton)
         val eventButton = findViewById<Button>(R.id.eventButton)
+        val monthLeft = findViewById<Button>(R.id.monthLeft)
+        val monthRight = findViewById<Button>(R.id.monthRight)
+        monthText = findViewById<TextView>(R.id.monthText)
+        monthText.text = LocalDate.of(LocalDate.now().year,currentMonth, 1 ).month.toString()
         supportFragmentManager.beginTransaction().apply {
             replace(R.id.flFragment, friendsFragment)
             commit()
@@ -109,14 +117,39 @@ class Schedule : AppCompatActivity() {
             }
         })
 
+        monthLeft.setOnClickListener{
+            if(currentMonth > 1 ){
+                currentMonth -= 1
+            }else{
+                currentYear -= 1
+                currentMonth = 12
+            }
+            monthText.text = LocalDate.of(LocalDate.now().year,currentMonth, 1 ).month.toString()
+            initializeCalendar()
+            getEvents()
+        }
+        monthRight.setOnClickListener{
+            if(currentMonth < 12 ){
+                currentMonth += 1
+            }else{
+                currentYear += 1
+                currentMonth = 1
+            }
+            monthText.text = LocalDate.of(LocalDate.now().year,currentMonth, 1 ).month.toString()
+            initializeCalendar()
+            getEvents()
+            Log.d("Initialize Calendar", "monthRight")
+        }
+
     }
     @RequiresApi(Build.VERSION_CODES.O)
     private fun initializeCalendar(){
-         firstDayOfWeekforMonth = LocalDate.of(LocalDate.now().year, LocalDate.now().month.value, 1).dayOfWeek.value
-
-        for(nums in 1- firstDayOfWeekforMonth..LocalDate.now().lengthOfMonth()){
+        firstDayOfWeekforMonth = LocalDate.of(currentYear, currentMonth, 1).dayOfWeek.value
+        Log.d("First Day of week for month ", firstDayOfWeekforMonth.toString())
+        dateItems.clear()
+        for(nums in 1- firstDayOfWeekforMonth..LocalDate.of(currentYear,currentMonth,1).lengthOfMonth()){
             var day: DateItem
-            if (nums < 1){
+            if(nums < 1){
                day = DateItem(null, null)
             }else {
                 day = DateItem(nums.toString(), null)
@@ -124,6 +157,7 @@ class Schedule : AppCompatActivity() {
 
             dateItems.add(day)
         }
+        recyclerView.adapter?.notifyDataSetChanged()
     }
     private fun getUserId() = runBlocking{
         val responseDeferred = async { NetworkManager().serverCaller("getuserinfo|$user") }
@@ -144,7 +178,7 @@ class Schedule : AppCompatActivity() {
         Log.d("Schedule", "Getting events")
         if (userId != null) {
             val responseDeferred =
-                async { NetworkManager().serverCaller("getmonthevents|$userId|${LocalDate.now().year}|${LocalDate.now().month.value}") }
+                async { NetworkManager().serverCaller("getmonthevents|$userId|${currentYear}|${currentMonth}") }
             val response = responseDeferred.await()
             Log.d("EventAttempt", "Server responded with: $response")
             if (response != "No events found" && response != "Unknown Command") {
