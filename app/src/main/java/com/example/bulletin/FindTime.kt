@@ -13,6 +13,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -32,6 +33,8 @@ class FindTime : AppCompatActivity() {
     private val userName = MainActivity.user;
     private var currentMonth = LocalDate.now().month.value
     private var currentYear = LocalDate.now().year
+    private lateinit var possibleEventsAdapter: PossibleEventAdapter
+    var possibleDays:MutableList<EventItem> = arrayListOf()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -56,6 +59,10 @@ class FindTime : AppCompatActivity() {
         val beforeFriendsAdapter = AdapterClass(beforeFriends)
         afterFriendsRecyclerView.adapter = afterFriendsAdapter
         beforeFriendsRecyclerView.adapter = beforeFriendsAdapter
+        possibleEventsRecyclerView.layoutManager = LinearLayoutManager(this)
+        possibleEventsAdapter = PossibleEventAdapter(possibleDays)
+        possibleEventsRecyclerView.adapter = possibleEventsAdapter
+
 
         lifecycleScope.launch(Dispatchers.IO) {
             getFriends()
@@ -94,7 +101,7 @@ class FindTime : AppCompatActivity() {
 
     }
     fun findAvailableTime() = runBlocking{
-            var possibleDays:MutableList<EventItem> = arrayListOf()
+
             for(friend in afterFriends){
                 val responseDeferred =
                     async { NetworkManager().serverCaller("getbusytimeinmonth|3|${friend.dataTitle}|$currentYear|$currentMonth ") }
@@ -115,11 +122,50 @@ class FindTime : AppCompatActivity() {
                         for(j in 0 until jsonObjectArray.getJSONArray(i).length()){
                             val tempArray = jsonObjectArray.getJSONArray(i)
                             Log.d("JsonDays", "On $i we have ${tempArray.getJSONArray(j)}")
-                            if(tempArray.getJSONArray(j)[0].toString().toInt() > 0 && j==0){
+                            Log.d("JsonDays", "On $i we have ${tempArray.getJSONArray(j)[1]} and temp array has a length of ${tempArray.getJSONArray(j).length()}")
+                           /* if(tempArray.getJSONArray(j)[0].toString().toInt() > 0){
                                 possibleDays.add(EventItem("", "$currentYear/$currentMonth/$i", "0","${tempArray.getJSONArray(j)[0]}", "", "", friends, "", "temp"))
-                            }else if(j < tempArray.length()-1){
+                            }else if (tempArray.length() > 1){
+                                possibleDays.add(EventItem("", "$currentYear/$currentMonth/$i", "","2400", "", "", friends, "", "temp"))
+                            }*/
+                            if( j==0){
+                                if(tempArray.getJSONArray(j)[0].toString().toInt() > 0) { // if it is on the first of a set of arrays and the first value is greater than 0
+                                    possibleDays.add(
+                                        EventItem(
+                                            "",
+                                            "$currentYear/$currentMonth/$i",
+                                            "0", //start at the smallest time
+                                            "${tempArray.getJSONArray(j)[0]}",// end at the first index
+                                            "",
+                                            "",
+                                            friends,
+                                            "",
+                                            "temp"
+                                        )
+                                    )
+
+                                }
+                                if (tempArray.length() == 1 && tempArray.getJSONArray(j)[1].toString().toInt() < 2400)
+                                {
+                                    possibleDays.add(
+                                        EventItem(
+                                            "",
+                                            "$currentYear/$currentMonth/$i",
+                                            "${tempArray.getJSONArray(j)[1]}", //start at the smallest time
+                                            "2400",// end at the first index
+                                            "",
+                                            "",
+                                            friends,
+                                            "",
+                                            "temp"
+                                        )
+                                    )
+
+                                }
+                            }else if(j < tempArray.length() -1){
                                 possibleDays.add(EventItem("", "$currentYear/$currentMonth/$i", "${tempArray.getJSONArray(j-1)[1]}","${tempArray.getJSONArray(j)[0]}", "", "", friends, "", "temp"))
                             }else if (tempArray.getJSONArray(j)[1].toString().toInt() < 2400){
+                                Log.d("JsonDays", "On $i we have ${tempArray.getJSONArray(j)[1]} with index j of $j")
                                 possibleDays.add(EventItem("", "$currentYear/$currentMonth/$i", "${tempArray.getJSONArray(j-1)[1]}","${tempArray.getJSONArray(j)[0]}", "", "", friends, "", "temp"))
                                 possibleDays.add(EventItem("", "$currentYear/$currentMonth/$i", "${tempArray.getJSONArray(j)[1]}","2400", "", "", friends, "", "temp"))
                             }
@@ -128,6 +174,7 @@ class FindTime : AppCompatActivity() {
                 }
                 Log.d("Busy time", response)
             }
+       possibleEventsRecyclerView.adapter?.notifyDataSetChanged()
         for(possibleDay in possibleDays) {
             Log.d("PossibleDays","Start: ${possibleDay.startTime}, End: ${possibleDay.endTime}")
         }
