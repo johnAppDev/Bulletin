@@ -14,8 +14,9 @@ class EventAdapter( private val eventList: List<EventItem>): RecyclerView.Adapte
     }
     override fun onBindViewHolder(holder: MyViewHolder, position: Int){
         val eventItem = eventList[position]
-        val text = "${eventItem.startTime} \n - ${eventItem.endTime}"
-        holder.timeRangeDisplay.text =  text
+        val timeText = "${eventItem.startTime} \n - ${eventItem.endTime}"
+        holder.eventTitle.text = eventItem.title
+        holder.timeRangeDisplay.text =  timeText
     }
     override fun getItemCount(): Int{
         return eventList.size
@@ -28,6 +29,7 @@ class EventAdapter( private val eventList: List<EventItem>): RecyclerView.Adapte
     }
     class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
         val timeRangeDisplay:TextView = itemView.findViewById(R.id.EventTime)
+        val eventTitle:TextView = itemView.findViewById(R.id.EventDetails)
     }
 
 }

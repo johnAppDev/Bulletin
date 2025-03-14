@@ -10,7 +10,7 @@ class DateItem {
     var eventItems: MutableList<EventItem>? = null
 
 
-    constructor(date:String, eventItems: MutableList<EventItem>?){
+    constructor(date:String?, eventItems: MutableList<EventItem>?){
 
         this.date = date
         this.eventItems = eventItems

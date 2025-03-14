@@ -1,10 +1,12 @@
 package com.example.bulletin
 
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -15,9 +17,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.decodeFromString
 import org.json.JSONObject
+import java.time.LocalDate
+import java.time.LocalDateTime
+
 
 private const val URL = "100.103.6.83"
 
@@ -29,6 +32,8 @@ class Schedule : AppCompatActivity() {
     }
     private lateinit var recyclerView: RecyclerView
     private lateinit var dateItems:MutableList<DateItem>
+    private var firstDayOfWeekforMonth: Int = 0
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
 
 
@@ -44,6 +49,7 @@ class Schedule : AppCompatActivity() {
 
         val createEventFragment = CreateEvent()
         val friendsFragment = Friends()
+        val eventViewFragment = EventView()
         val friendButton = findViewById<Button>(R.id.friendButton)
         val eventButton = findViewById<Button>(R.id.eventButton)
         supportFragmentManager.beginTransaction().apply {
@@ -71,7 +77,7 @@ class Schedule : AppCompatActivity() {
         recyclerView.adapter = adapter
         lifecycleScope.launch(Dispatchers.IO) {
             getUserId()
-            getEvents(this@Schedule)
+            getEvents()
         }
        initializeCalendar()
         recyclerView.layoutManager = GridLayoutManager(this, 7)
@@ -82,6 +88,7 @@ class Schedule : AppCompatActivity() {
                Log.d("Schedule", "Clicked on item at $position")
                 val eventList = dateItems[position].eventItems
                 if (eventList != null) {
+
                     for (i in 0..<eventList.size) {
                         Log.d("ScheduleEvents", "${eventList[i].title}")
                     }
@@ -90,17 +97,30 @@ class Schedule : AppCompatActivity() {
                 }
                Log.d("Schedule", "Item has a description of: ${dateItems[position].eventItems?.get(0)?.title}")
                 supportFragmentManager.beginTransaction().apply {
+                    if (eventList != null) {
+                        EventView.events = eventList
+                    }else{
+                        EventView.events = arrayListOf()
+                    }
                     replace(R.id.flFragment, EventView())
                     commit()
+
                 }
             }
         })
 
     }
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun initializeCalendar(){
-        for(nums in 0..30){
+         firstDayOfWeekforMonth = LocalDate.of(LocalDate.now().year, LocalDate.now().month.value, 1).dayOfWeek.value
 
-            var day = DateItem(nums.toString(),null)
+        for(nums in 1- firstDayOfWeekforMonth..LocalDate.now().lengthOfMonth()){
+            var day: DateItem
+            if (nums < 1){
+               day = DateItem(null, null)
+            }else {
+                day = DateItem(nums.toString(), null)
+            }
 
             dateItems.add(day)
         }
@@ -119,11 +139,12 @@ class Schedule : AppCompatActivity() {
 
 
 
-    private fun getEvents(Activity: ComponentActivity)= runBlocking{
+    @RequiresApi(Build.VERSION_CODES.O)
+    public fun getEvents()= runBlocking{
         Log.d("Schedule", "Getting events")
         if (userId != null) {
             val responseDeferred =
-                async { NetworkManager().serverCaller("getmonthevents|$userId|2021|2") }
+                async { NetworkManager().serverCaller("getmonthevents|$userId|${LocalDate.now().year}|${LocalDate.now().month.value}") }
             val response = responseDeferred.await()
             Log.d("EventAttempt", "Server responded with: $response")
             if (response != "No events found" && response != "Unknown Command") {
@@ -141,7 +162,7 @@ class Schedule : AppCompatActivity() {
                     val details = jsonObjectArray.getJSONObject(i).getString("details")
                     val eventId = jsonObjectArray.getJSONObject(i).getString("eventid")
                     val datePieces = date.split("/")
-                    val index = datePieces[datePieces.size-1].toInt()
+                    val index = datePieces[datePieces.size-1].toInt() - 1 + firstDayOfWeekforMonth
                     val tempEvent=  EventItem(title,date,startTime,endTime,location,publicityType,invitees,details,eventId)
 
                     Log.d("JSON Object Title", title)

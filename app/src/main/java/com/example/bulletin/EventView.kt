@@ -14,9 +14,10 @@ import androidx.recyclerview.widget.RecyclerView
 
 
 class EventView : Fragment(R.layout.fragment_event_view) {
-
-
-
+    companion object{
+        var events: MutableList<EventItem> = arrayListOf()
+    }
+    lateinit var eventRecycler :RecyclerView
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -29,8 +30,7 @@ class EventView : Fragment(R.layout.fragment_event_view) {
     override fun onStart(){
 
         super.onStart()
-        val events:List<EventItem> = arrayListOf()
-        val eventRecycler = requireView().findViewById<RecyclerView>(R.id.eventRecycler) as RecyclerView
+        eventRecycler = requireView().findViewById<RecyclerView>(R.id.eventRecycler) as RecyclerView
         val adapter = EventAdapter(events)
         eventRecycler.layoutManager = LinearLayoutManager(activity)
         eventRecycler.adapter = adapter

@@ -3,13 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    app:cardBackgroundColor="#00FFFFFF">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:background="#673AB7">
+        android:layout_height="wrap_content"
+        android:background="@drawable/textbox"
+        android:backgroundTint="@color/purple_200"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp">
 
         <TextView
             android:id="@+id/EventTime"
@@ -17,7 +22,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/bettercomicsans"
             android:text="12:00 \n-12:30"
-            android:textSize="72sp"
+            android:textSize="32sp"
             app:layout_constraintBaseline_toBaselineOf="@+id/EventDetails"
             app:layout_constraintEnd_toStartOf="@+id/EventDetails"
             app:layout_constraintStart_toStartOf="parent" />

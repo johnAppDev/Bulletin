@@ -1,6 +1,7 @@
 package com.example.bulletin
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,6 +11,7 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -26,7 +28,6 @@ import java.io.OutputStreamWriter
 import java.net.Socket
 
 val user = MainActivity.user
-private const val URL = "100.103.6.83"
 class CreateEvent : Fragment(R.layout.activity_create_event) {
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,6 +36,7 @@ class CreateEvent : Fragment(R.layout.activity_create_event) {
     ): View? {
         return inflater.inflate(R.layout.activity_create_event, container, false)
     }
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onStart() {
         super.onStart()
 
@@ -62,11 +64,14 @@ class CreateEvent : Fragment(R.layout.activity_create_event) {
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun createEvent(title:String, date:String, startTime:String, endTime:String, publicity:Boolean, invitees:String) = runBlocking{
         Log.d("EventCreation", "EventCreation attempted ")
-        val responseDeferred = async{ NetworkManager().serverCaller("createevent|${Schedule.userId}|$title|$date|$startTime|$endTime|${if(publicity) "FriendsOnly" else "Private"}|$invitees")}
+        val responseDeferred = async{ NetworkManager().serverCaller("createevent|${Schedule.userId}|$title|$date,$date|$startTime|$endTime|${if(publicity) "FriendsOnly" else "Private"}|$invitees")}
         val response = responseDeferred.await()
         Log.d("EventCreation", "Server responded with: $response")
+        (activity as Schedule).getEvents()
 
     }
+
 }
