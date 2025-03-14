@@ -67,7 +67,7 @@
                 android:layout_marginHorizontal="10dp"
                 android:background="@drawable/textbox"
                 android:fontFamily="@font/bettercomicsans"
-                android:hint="Date(mm/dd/yyyy)"
+                android:hint="Date(yyyy/mm/dd)"
                 android:textColor="#646464"
                 android:inputType="date"
                 android:textColorHint="#646464"

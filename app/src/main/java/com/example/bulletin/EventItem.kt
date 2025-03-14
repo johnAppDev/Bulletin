@@ -1,5 +1,7 @@
 package com.example.bulletin
 
+import android.widget.EditText
+
 class EventItem {
     var title: String? = null
     var date: String? = null
@@ -10,6 +12,7 @@ class EventItem {
     var invitees: List<String>? = null
     var details: String? = null
     var eventId:String? = null
+    var editText: EditText? = null
 
     constructor(title:String, date:String, startTime:String, endTime:String, location:String, publicityType: String, invitees:List<String>?, details: String, eventId: String ){
         this.title = title

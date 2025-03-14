@@ -11,8 +11,8 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:fontFamily="@font/bettercomicsans"
+        android:hint="Title"
         android:inputType="text"
-        android:text="Title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Date" />

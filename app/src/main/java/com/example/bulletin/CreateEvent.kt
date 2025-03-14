@@ -65,7 +65,7 @@ class CreateEvent : Fragment(R.layout.activity_create_event) {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun createEvent(title:String, date:String, startTime:String, endTime:String, publicity:Boolean, invitees:String) = runBlocking{
+    fun createEvent(title:String, date:String, startTime:String, endTime:String, publicity:Boolean, invitees:String) = runBlocking{
         Log.d("EventCreation", "EventCreation attempted ")
         val responseDeferred = async{ NetworkManager().serverCaller("createevent|${Schedule.userId}|$title|$date,$date|$startTime|$endTime|${if(publicity) "FriendsOnly" else "Private"}|$invitees")}
         val response = responseDeferred.await()

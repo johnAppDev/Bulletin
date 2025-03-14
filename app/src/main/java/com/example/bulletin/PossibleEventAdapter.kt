@@ -23,6 +23,7 @@ class PossibleEventAdapter(private val eventList: List<EventItem>):RecyclerView.
         val timeRange =eventItem.startTime + "-" + eventItem.endTime
         holder.dateName.text = eventItem.date
         holder.timeRange.text = timeRange
+        eventItem.editText = holder.titleInput
       //  holder.titleInput.setText(eventItem.title)
         holder.submitButton.setOnClickListener {
             if (onClickListener != null) {

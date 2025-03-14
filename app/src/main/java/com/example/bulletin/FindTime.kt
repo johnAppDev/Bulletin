@@ -15,12 +15,15 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.bulletin.Schedule.Companion
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
 import java.time.LocalDate
+import kotlin.properties.Delegates
+
 @RequiresApi(Build.VERSION_CODES.O)
 class FindTime : AppCompatActivity() {
     private lateinit var beforeFriendsRecyclerView: RecyclerView
@@ -34,6 +37,7 @@ class FindTime : AppCompatActivity() {
     private var currentMonth = LocalDate.now().month.value
     private var currentYear = LocalDate.now().year
     private lateinit var possibleEventsAdapter: PossibleEventAdapter
+    private var userId: String? = null
     var possibleDays:MutableList<EventItem> = arrayListOf()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +49,7 @@ class FindTime : AppCompatActivity() {
             insets
         }
         //Start of My Code:
+        getUserId()
         val monthLeftButton = findViewById<Button>(R.id.monthLeft)
         val monthRightButton = findViewById<Button>(R.id.monthRight)
         val calculateEventsButton = findViewById<Button>(R.id.calculateEventsButton)
@@ -97,7 +102,14 @@ class FindTime : AppCompatActivity() {
             }
             monthText.text = LocalDate.of(LocalDate.now().year,currentMonth, 1 ).month.toString()
         }
+        possibleEventsAdapter.setOnClickListener(object : PossibleEventAdapter.OnClickListener{
+            override fun onClick(position: Int, model: EventItem)
+            {
+                val title = model.editText!!.editableText.toString()
+                createEvent(title, model.date!!, model.startTime!!, model.endTime!!, true, "")
 
+            }
+        })
 
     }
     fun findAvailableTime() = runBlocking{
@@ -174,7 +186,9 @@ class FindTime : AppCompatActivity() {
                 }
                 Log.d("Busy time", response)
             }
-       possibleEventsRecyclerView.adapter?.notifyDataSetChanged()
+        runOnUiThread {
+            possibleEventsRecyclerView.adapter?.notifyDataSetChanged()
+        }
         for(possibleDay in possibleDays) {
             Log.d("PossibleDays","Start: ${possibleDay.startTime}, End: ${possibleDay.endTime}")
         }
@@ -210,4 +224,24 @@ class FindTime : AppCompatActivity() {
         beforeFriendsRecyclerView.adapter?.notifyDataSetChanged()
 
     }
+    private fun createEvent(title:String, date:String, startTime:String, endTime:String, publicity:Boolean, invitees:String) = runBlocking{
+        Log.d("EventCreation", "EventCreation attempted ")
+        val responseDeferred = async{ NetworkManager().serverCaller("createevent|${userId}|$title|$date,$date|$startTime|$endTime|${if(publicity) "FriendsOnly" else "Private"}|$invitees")}
+        val response = responseDeferred.await()
+        Log.d("EventCreation", "Server responded with: $response")
+
+
+    }
+    private fun getUserId() = runBlocking {
+        val responseDeferred = async { NetworkManager().serverCaller("getuserinfo|$user") }
+        val response = responseDeferred.await()
+        Log.d("EventAttempt", "Server responded with: $response")
+        if (response != "User not found") {
+
+            userId = response.split(",")[0];
+
+        }
+
+    }
+
 }
