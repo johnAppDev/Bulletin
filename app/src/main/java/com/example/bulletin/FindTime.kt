@@ -50,6 +50,7 @@ class FindTime : AppCompatActivity() {
         }
         //Start of My Code:
         getUserId()
+        val backButton = findViewById<Button>(R.id.back)
         val monthLeftButton = findViewById<Button>(R.id.monthLeft)
         val monthRightButton = findViewById<Button>(R.id.monthRight)
         val calculateEventsButton = findViewById<Button>(R.id.calculateEventsButton)
@@ -101,6 +102,10 @@ class FindTime : AppCompatActivity() {
                 currentMonth = 1
             }
             monthText.text = LocalDate.of(LocalDate.now().year,currentMonth, 1 ).month.toString()
+        }
+        backButton.setOnClickListener{
+            val intent = Intent(this, Schedule::class.java)
+            startActivity(intent)
         }
         possibleEventsAdapter.setOnClickListener(object : PossibleEventAdapter.OnClickListener{
             override fun onClick(position: Int, model: EventItem)

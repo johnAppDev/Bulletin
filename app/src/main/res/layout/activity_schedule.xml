@@ -195,14 +195,28 @@
         android:padding="10dp"
         android:text="Friends"
         android:textColor="@color/black"
-        app:layout_constraintBaseline_toBaselineOf="@+id/eventButton"
-        app:layout_constraintEnd_toStartOf="@+id/eventButton"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/FindTime"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/FindTime"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/textbox"
+        android:backgroundTint="@color/purple_200"
+        android:fontFamily="@font/bettercomicsansbold"
+        android:padding="10dp"
+        android:text="Find Time"
+        android:textColor="@color/black"
+        app:layout_constraintBaseline_toBaselineOf="@id/friendButton"
+        app:layout_constraintEnd_toStartOf="@+id/eventButton"
+        app:layout_constraintStart_toEndOf="@+id/friendButton" />
 
     <Button
         android:id="@+id/eventButton"
         android:layout_width="0dp"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         android:background="@drawable/textbox"
         android:backgroundTint="@color/purple_200"
         android:fontFamily="@font/bettercomicsansbold"
@@ -211,7 +225,7 @@
         android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/friendButton" />
+        app:layout_constraintStart_toEndOf="@+id/FindTime" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,5 +1,6 @@
 package com.example.bulletin
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -54,6 +55,7 @@ class Schedule : AppCompatActivity() {
         val createEventFragment = CreateEvent()
         val friendsFragment = Friends()
         val eventViewFragment = EventView()
+        val findTimeButton = findViewById<Button>(R.id.FindTime)
         val friendButton = findViewById<Button>(R.id.friendButton)
         val eventButton = findViewById<Button>(R.id.eventButton)
         val monthLeft = findViewById<Button>(R.id.monthLeft)
@@ -75,6 +77,10 @@ class Schedule : AppCompatActivity() {
                 replace(R.id.flFragment, createEventFragment)
                 commit()
             }
+        }
+        findTimeButton.setOnClickListener {
+            val intent = Intent(this, FindTime::class.java)
+            this.startActivity(intent)
         }
 
         Log.d("Schedule", "Starting")
